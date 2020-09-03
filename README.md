@@ -1,2 +1,2 @@
-# Example
-An example greeter plugin
+# BA Plus
+Speedrunning and leeching enhancements to Barbarian Assault
