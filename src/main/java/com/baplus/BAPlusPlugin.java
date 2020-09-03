@@ -126,7 +126,7 @@ public class BAPlusPlugin extends Plugin
 		keyManager.registerKeyListener(nextKeyListener);
 
 		// Save splits for current WRs and custom times
-		saveTime(RunCategory.SOLOHEALWR, new String[] {"0:30", "1:10", "1:56", "2:42", "3:32", "4:40", "5:51", "7:07", "8:32", "10:20"});
+		saveTime(RunCategory.SOLOHEALWR, new String[] {"0:30", "1:10", "1:55", "2:41", "3:36", "4:39", "5:50", "7:06", "8:30", "10:18"});
 		saveTime(RunCategory.DUOHEALWR, new String[] {"0:30", "1:11", "1:57", "2:41", "3:33", "4:34", "5:38", "6:48", "8:11", "9:57"});
 		saveTime(RunCategory.LEECHWR, new String[] {"0:32", "1:14", "2:04", "2:55", "3:52", "4:57", "6:10", "7:27", "8:56", "10:50"});
 		saveTime(RunCategory.CUSTOM, parseWaveTimesFromString(config.getDesiredWaveSplits()));
