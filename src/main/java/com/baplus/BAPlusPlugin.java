@@ -112,6 +112,10 @@ public class BAPlusPlugin extends Plugin
 				saveTime(config.category(), parseWaveTimesFromString(config.getDesiredWaveSplits()));
 				announceMessage("Personal best saved for run type: " + config.category().toString() + ".");
 			}
+			else if (config.category() == RunCategory.CUSTOM)
+			{
+				waveGoal = parseWaveTimesFromString(config.getDesiredWaveTimes());
+			}
 			else
 			{
 				announceMessage("Unable to save personal best - Invalid run type: " + config.category().toString() + ", save as a PB.");
