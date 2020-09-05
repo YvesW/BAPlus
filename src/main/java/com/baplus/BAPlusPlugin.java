@@ -212,7 +212,7 @@ public class BAPlusPlugin extends Plugin
 					}
 				}
 				// Wave 1-9 ended
-				else if (pointsWidget != null && client.getVar(Varbits.IN_GAME_BA) == 0 && config.wavePointBreakdown())
+				else if (pointsWidget != null && client.getVar(Varbits.IN_GAME_BA) == 0)
 				{
 					int wavePoints_Attacker, wavePoints_Defender, wavePoints_Healer, wavePoints_Collector, waveEggsCollected, waveHPReplenished, waveFailedAttacks;
 
@@ -276,7 +276,7 @@ public class BAPlusPlugin extends Plugin
 						.append(System.getProperty("line.separator"))
 						.append(waveEggsCollected + " eggs collected, " + waveHPReplenished + "HP vialed and " + waveFailedAttacks + " wrong attacks.");
 
-					if (config.pointBreakdown())
+					if (config.wavePointBreakdown())
 					{
 						chatMessageManager.queue(QueuedMessage.builder().type(ChatMessageType.CONSOLE).runeLiteFormattedMessage(message.build()).build());
 					}
@@ -462,7 +462,7 @@ public class BAPlusPlugin extends Plugin
 					.append(ChatColorType.NORMAL)
 					.append("Game finished, duration: ")
 					.append(ChatColorType.HIGHLIGHT)
-					.append(time)
+					.append(gameTime.getTime(false))
 					.build();
 
 				chatMessageManager.queue(QueuedMessage.builder()
