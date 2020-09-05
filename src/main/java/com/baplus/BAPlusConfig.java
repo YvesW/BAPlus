@@ -1,3 +1,27 @@
+/*
+ * Copyright (c) 2020, Sean 'Furret' Hill <https://github.com/hisean1>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.baplus;
 
 import java.awt.event.InputEvent;
@@ -46,8 +70,8 @@ public interface BAPlusConfig extends Config
 
 	@ConfigItem(
 		keyName = "pointBreakdown",
-		name = "Show point breakdown",
-		description = "Provides a detailed point breakdown for each role after every wave",
+		name = "Show game point breakdown",
+		description = "Provides a detailed point breakdown for each role after a round",
 		position = 3
 	)
 	default boolean pointBreakdown()
@@ -55,17 +79,28 @@ public interface BAPlusConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		keyName = "wavePointBreakdown",
+		name = "Individual wave point breakdown",
+		description = "Provides a point breakdown after every wave",
+		position = 4
+	)
+	default boolean wavePointBreakdown()
+	{
+		return false;
+	}
+
 	@ConfigSection(
 		name = "Split Comparisons",
 		description = "Choose which splits to compare against",
-		position = 4
+		position = 5
 	)
 	String splitComparison = "splitComparison";
 	@ConfigItem(
 		keyName = "category",
 		name = "Run Category",
 		description = "Run category to compare against",
-		position = 5,
+		position = 6,
 		section = splitComparison
 	)
 	default RunCategory category()
@@ -77,7 +112,7 @@ public interface BAPlusConfig extends Config
 		keyName = "pbSaveKey",
 		name = "Save last run as PB",
 		description = "Choose the PB run category to save to, then hit this hotkey",
-		position = 6,
+		position = 7,
 		section = splitComparison
 	)
 	default Keybind saveLastRunAsPB()
@@ -90,7 +125,7 @@ public interface BAPlusConfig extends Config
 		name = "Save custom time as PB",
 		description = "Choose the PB run category to save to, enter a custom time\n" +
 			"in the Wave Splits box, then hit this hotkey",
-		position = 7,
+		position = 8,
 		section = splitComparison
 	)
 	default Keybind saveCustomAsPB()
@@ -101,8 +136,8 @@ public interface BAPlusConfig extends Config
 	@ConfigItem(
 		keyName = "waveEndTimes",
 		name = "Wave End Times",
-		description = "Enter your desired wave end times (time for this specific wave)",
-		position = 8,
+		description = "Enter your desired wave end times (time for each specific wave)",
+		position = 9,
 		section = splitComparison
 	)
 	default String getDesiredWaveTimes()
@@ -122,7 +157,7 @@ public interface BAPlusConfig extends Config
 		keyName = "waveEndSplits",
 		name = "Wave Splits",
 		description = "Enter your desired wave splits (total time from start to wave finish)",
-		position = 9,
+		position = 10,
 		section = splitComparison
 	)
 	default String getDesiredWaveSplits()
