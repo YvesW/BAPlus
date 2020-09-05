@@ -428,6 +428,22 @@ public class BAPlusPlugin extends Plugin
 				.type(ChatMessageType.CONSOLE)
 				.runeLiteFormattedMessage(timeMessage)
 				.build());
+
+			// Display game duration if not already displaying splits
+			if (waveNum == BA_WAVE_COUNT && !config.waveSplits())
+			{
+				String endMessage = new ChatMessageBuilder()
+					.append(ChatColorType.NORMAL)
+					.append("Game finished, duration: ")
+					.append(ChatColorType.HIGHLIGHT)
+					.append(time)
+					.build();
+
+				chatMessageManager.queue(QueuedMessage.builder()
+					.type(ChatMessageType.CONSOLE)
+					.runeLiteFormattedMessage(endMessage)
+					.build());
+			}
 		}
 	}
 
