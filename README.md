@@ -14,4 +14,6 @@ Speedrunning and leeching enhancements to Barbarian Assault
 - Wave End Splits -> Custom text box to compare your desired splits (choose Custom as run category)
 --> Enter wave end times/splits as a string of times.  Example: :30,:36,:42,:42,:45,:57,1:06,1:09,1:18,1:43
 
+If you want to update the wave end goals, use the Save custom time hotkey and attempt to save to the Custom run category
+
 Feel free to report issues or give suggestions by commenting on github or messaging me on discord: Furret#0083
