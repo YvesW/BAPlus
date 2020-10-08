@@ -141,6 +141,8 @@ public class BAPlusPlugin extends Plugin
 			else if (config.category() == RunCategory.CUSTOM)
 			{
 				waveGoal = parseWaveTimesFromString(config.getDesiredWaveTimes());
+				announceMessage("Saved new goal times: " + waveGoal[0] + ", " + waveGoal[1] + ", " + waveGoal[2] + ", " + waveGoal[3]
+					+ ", " + waveGoal[4] + ", " + waveGoal[5] + ", " + waveGoal[6] + ", " + waveGoal[7] + ", " + waveGoal[8] + ", " + waveGoal[9]);
 			}
 			else
 			{
