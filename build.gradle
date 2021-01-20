@@ -21,7 +21,9 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 	testImplementation 'org.slf4j:slf4j-simple:1.7.12'
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion, {
-		exclude group: 'ch.qos.logback', module: 'logback-classic'
+		//exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'net.runelite.jogl', module: 'jogl-all'
+        exclude group: 'net.runelite.gluegen', module: 'gluegen-rt'
 	}
 }
 

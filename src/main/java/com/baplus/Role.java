@@ -40,7 +40,7 @@ enum Role
 	@Getter
 	private final WidgetInfo roleSprite;
 
-	Role(WidgetInfo listen, WidgetInfo call, WidgetInfo role, WidgetInfo roleSprite)
+	Role(WidgetInfo role, WidgetInfo roleSprite)
 	{
 		this.roleText = role;
 		this.roleSprite = roleSprite;
