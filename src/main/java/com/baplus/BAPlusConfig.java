@@ -90,17 +90,28 @@ public interface BAPlusConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		keyName = "disableCallFlash",
+		name = "Disable Call Flashing",
+		description = "Stops the flashing effect on call changes",
+		position = 5
+	)
+	default boolean disableCallFlashing()
+	{
+		return true;
+	}
+
 	@ConfigSection(
 		name = "Split Comparisons",
 		description = "Choose which splits to compare against",
-		position = 5
+		position = 6
 	)
 	String splitComparison = "splitComparison";
 	@ConfigItem(
 		keyName = "category",
 		name = "Run Category",
 		description = "Run category to compare against",
-		position = 6,
+		position = 7,
 		section = splitComparison
 	)
 	default RunCategory category()
@@ -112,7 +123,7 @@ public interface BAPlusConfig extends Config
 		keyName = "pbSaveKey",
 		name = "Save last run as PB",
 		description = "Choose the PB run category to save to, then hit this hotkey",
-		position = 7,
+		position = 8,
 		section = splitComparison
 	)
 	default Keybind saveLastRunAsPB()
@@ -125,7 +136,7 @@ public interface BAPlusConfig extends Config
 		name = "Save custom time as PB",
 		description = "Choose the PB run category to save to, enter a custom time\n" +
 			"in the Wave Splits box, then hit this hotkey",
-		position = 8,
+		position = 9,
 		section = splitComparison
 	)
 	default Keybind saveCustomAsPB()
@@ -137,7 +148,7 @@ public interface BAPlusConfig extends Config
 		keyName = "waveEndTimes",
 		name = "Wave End Times",
 		description = "Enter your desired wave end times (time for each specific wave)",
-		position = 9,
+		position = 10,
 		section = splitComparison
 	)
 	default String getDesiredWaveTimes()
@@ -157,7 +168,7 @@ public interface BAPlusConfig extends Config
 		keyName = "waveEndSplits",
 		name = "Wave Splits",
 		description = "Enter your desired wave splits (total time from start to wave finish)",
-		position = 10,
+		position = 11,
 		section = splitComparison
 	)
 	default String getDesiredWaveSplits()
