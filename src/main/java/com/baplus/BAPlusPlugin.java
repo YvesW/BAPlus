@@ -34,15 +34,18 @@ import java.awt.Color;
 import javax.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+/*
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.VarbitChanged;
-import net.runelite.api.events.WidgetLoaded;
+import net.runelite.api.events.WidgetLoaded;*/
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.*;
+import net.runelite.api.events.*;
 import net.runelite.client.chat.ChatColorType;
 import net.runelite.client.chat.ChatMessageBuilder;
 import net.runelite.client.chat.ChatMessageManager;
@@ -57,10 +60,19 @@ import net.runelite.client.util.HotkeyListener;
 
 @Slf4j
 @PluginDescriptor(
-	name = "BA Plus"
+	name = "BA Plus",
+	description = "Adds speedrunning and general qol improvements to the base BA plugin",
+	tags = {"ba", "barb assault", "barbarian assault", "speedrunning"}
 )
 public class BAPlusPlugin extends Plugin
 {
+	private final int BA_GREEN_EGG_ID = 10531;
+	private final int BA_RED_EGG_ID = 10532;
+	private final int BA_BLUE_EGG_ID = 10533;
+	private final int BA_YELLOW_EGG_ID = 10534;
+	private final int BA_POISONED_EGG_ID = 10535;
+	private final int BA_SPIKED_EGG_ID = 10536;
+	private final int BA_OMEGA_EGG_ID = 10537;
 	private static final int BA_WAVE_NUM_INDEX = 2;
 	private static final int BA_WAVE_COUNT = 10;
 	private static final String START_WAVE = "1";
@@ -183,10 +195,145 @@ public class BAPlusPlugin extends Plugin
 	}
 
 	@Subscribe
+	public void onItemSpawned(ItemSpawned itemSpawned)
+	{
+		if (config.legacyEggModels())
+		{
+			TileItem item = itemSpawned.getItem();
+			if (item.getId() == BA_YELLOW_EGG_ID)
+			{
+				recolorAllFaces(item.getModel(), BA_YELLOW_EGG_ID);
+			}
+		}
+	}
+
+	private void recolorAllFaces(Model model, int item)
+	{
+		if (model == null) {
+			return;
+		}
+
+		int[] faceColors1 = model.getFaceColors1();
+		int[] faceColors2 = model.getFaceColors2();
+		int[] faceColors3 = model.getFaceColors3();
+
+		replaceFaceColorValues(faceColors1, faceColors2, faceColors3, item);
+	}
+
+	private void replaceFaceColorValues(int[] faceColors1, int[] faceColors2, int[] faceColors3, int item) {
+		if (faceColors1.length > 0)
+		{
+			for (int i = 0; i < faceColors1.length; i++)
+			{
+				switch(item)
+				{
+					case BA_GREEN_EGG_ID:
+						if (faceColors1[i] >= 0)
+						{
+							log.debug("GREEN EGG: " + faceColors1[i]);
+						}
+						break;
+					case BA_RED_EGG_ID:
+						if (faceColors1[i] >= 0)
+						{
+							log.debug("RED EGG: " + faceColors1[i]);
+						}
+						break;
+					case BA_BLUE_EGG_ID:
+						if (faceColors1[i] >= 0)
+						{
+							log.debug("BLUE EGG: " + faceColors1[i]);
+						}
+						break;
+					case BA_YELLOW_EGG_ID:
+						if (faceColors1[i] >= 60466)
+						{
+							faceColors1[i] = faceColors1[i] - 56320;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		if (faceColors2.length > 0)
+		{
+			for (int i = 0; i < faceColors2.length; i++)
+			{
+				switch(item)
+				{
+					case BA_GREEN_EGG_ID:
+						if (faceColors2[i] >= 0)
+						{
+							log.debug("GREEN EGG: " + faceColors2[i]);
+						}
+						break;
+					case BA_RED_EGG_ID:
+						if (faceColors2[i] >= 0)
+						{
+							log.debug("RED EGG: " + faceColors2[i]);
+						}
+						break;
+					case BA_BLUE_EGG_ID:
+						if (faceColors2[i] >= 0)
+						{
+							log.debug("BLUE EGG: " + faceColors2[i]);
+						}
+						break;
+					case BA_YELLOW_EGG_ID:
+						if (faceColors2[i] >= 60466)
+						{
+							faceColors2[i] = faceColors2[i] - 56320;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		if (faceColors3.length > 0)
+		{
+			for (int i = 0; i < faceColors3.length; i++)
+			{
+				switch(item)
+				{
+					case BA_GREEN_EGG_ID:
+						if (faceColors3[i] >= 0)
+						{
+							log.debug("GREEN EGG: " + faceColors3[i]);
+						}
+						break;
+					case BA_RED_EGG_ID:
+						if (faceColors3[i] >= 0)
+						{
+							log.debug("RED EGG: " + faceColors3[i]);
+						}
+						break;
+					case BA_BLUE_EGG_ID:
+						if (faceColors3[i] >= 0)
+						{
+							log.debug("BLUE EGG: " + faceColors3[i]);
+						}
+						break;
+					case BA_YELLOW_EGG_ID:
+						if (faceColors3[i] >= 60466)
+						{
+							faceColors3[i] = faceColors3[i] - 56320;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+
+	@Subscribe
 	public void onWidgetLoaded(WidgetLoaded event)
 	{
 		switch (event.getGroupId())
 		{
+			// Reward Screen Widget
 			case WidgetID.BA_REWARD_GROUP_ID:
 			{
 				Widget rewardWidget = client.getWidget(WidgetInfo.BA_REWARD_TEXT);
@@ -286,24 +433,32 @@ public class BAPlusPlugin extends Plugin
 
 				break;
 			}
+			// Wave Starting (Attacker)
 			case WidgetID.BA_ATTACKER_GROUP_ID:
 			{
 				setRound(Role.ATTACKER);
+				disableCallFlash(Role.ATTACKER);
 				break;
 			}
+			// Wave Starting (Defender)
 			case WidgetID.BA_DEFENDER_GROUP_ID:
 			{
 				setRound(Role.DEFENDER);
+				disableCallFlash(Role.DEFENDER);
 				break;
 			}
+			// Wave Starting (Healer)
 			case WidgetID.BA_HEALER_GROUP_ID:
 			{
 				setRound(Role.HEALER);
+				disableCallFlash(Role.HEALER);
 				break;
 			}
+			// Wave Starting (Collector)
 			case WidgetID.BA_COLLECTOR_GROUP_ID:
 			{
 				setRound(Role.COLLECTOR);
+				disableCallFlash(Role.COLLECTOR);
 				break;
 			}
 		}
@@ -405,6 +560,34 @@ public class BAPlusPlugin extends Plugin
 		if (config.waveSplits())
 		{
 			announceTime(waveNum, config.category(), time);
+		}
+	}
+
+	private void disableCallFlash(Role role)
+	{
+		if (config.disableCallFlashing())
+		{
+			switch (role)
+			{
+				case ATTACKER:
+					final Widget atkFlashWidget = client.getWidget(485, 4);
+					atkFlashWidget.setOpacity(255);
+					break;
+				case DEFENDER:
+					final Widget defFlashWidget = client.getWidget(487, 4);
+					defFlashWidget.setOpacity(255);
+					break;
+				case COLLECTOR:
+					final Widget colFlashWidget = client.getWidget(486, 4);
+					colFlashWidget.setOpacity(255);
+					break;
+				case HEALER:
+					final Widget healFlashWidget = client.getWidget(488, 4);
+					healFlashWidget.setOpacity(255);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
