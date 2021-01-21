@@ -73,6 +73,10 @@ public class BAPlusPlugin extends Plugin
 	private final int BA_POISONED_EGG_ID = 10535;
 	private final int BA_SPIKED_EGG_ID = 10536;
 	private final int BA_OMEGA_EGG_ID = 10537;
+	private final int WHITE_TO_RED = 900;
+	private final int WHITE_TO_GREEN = 22400;
+	private final int WHITE_TO_BLUE = 43400;
+	private final int RED_TO_YELLOW = -56320;
 	private static final int BA_WAVE_NUM_INDEX = 2;
 	private static final int BA_WAVE_COUNT = 10;
 	private static final String START_WAVE = "1";
@@ -184,6 +188,8 @@ public class BAPlusPlugin extends Plugin
 				waveGoal = parseWaveTimesFromString((config.getDesiredWaveTimes()));
 			}
 		}
+
+		log.debug("Startup");
 	}
 
 	@Override
@@ -200,7 +206,27 @@ public class BAPlusPlugin extends Plugin
 		if (config.legacyEggModels())
 		{
 			TileItem item = itemSpawned.getItem();
-			if (item.getId() == BA_YELLOW_EGG_ID)
+			if (item.getId() == BA_GREEN_EGG_ID)
+			{
+				recolorAllFaces(item.getModel(), BA_GREEN_EGG_ID);
+			}
+			else if (item.getId() == BA_RED_EGG_ID)
+			{
+				recolorAllFaces(item.getModel(), BA_RED_EGG_ID);
+			}
+			else if (item.getId() == BA_BLUE_EGG_ID)
+			{
+				recolorAllFaces(item.getModel(), BA_BLUE_EGG_ID);
+			}
+			else if (item.getId() == BA_YELLOW_EGG_ID)
+			{
+				recolorAllFaces(item.getModel(), BA_YELLOW_EGG_ID);
+			}
+			else if (item.getId() == BA_POISONED_EGG_ID)
+			{
+				recolorAllFaces(item.getModel(), BA_YELLOW_EGG_ID);
+			}
+			else if (item.getId() == BA_SPIKED_EGG_ID)
 			{
 				recolorAllFaces(item.getModel(), BA_YELLOW_EGG_ID);
 			}
@@ -228,27 +254,27 @@ public class BAPlusPlugin extends Plugin
 				switch(item)
 				{
 					case BA_GREEN_EGG_ID:
-						if (faceColors1[i] >= 0)
+						if (faceColors1[i] < 500)
 						{
-							log.debug("GREEN EGG: " + faceColors1[i]);
+							faceColors1[i] = faceColors1[i] + WHITE_TO_GREEN;
 						}
 						break;
 					case BA_RED_EGG_ID:
-						if (faceColors1[i] >= 0)
+						if (faceColors1[i] < 750)
 						{
-							log.debug("RED EGG: " + faceColors1[i]);
+							faceColors1[i] = faceColors1[i] + WHITE_TO_RED;
 						}
 						break;
 					case BA_BLUE_EGG_ID:
-						if (faceColors1[i] >= 0)
+						if (faceColors1[i] < 500)
 						{
-							log.debug("BLUE EGG: " + faceColors1[i]);
+							faceColors1[i] = faceColors1[i] + WHITE_TO_BLUE;
 						}
 						break;
 					case BA_YELLOW_EGG_ID:
 						if (faceColors1[i] >= 60466)
 						{
-							faceColors1[i] = faceColors1[i] - 56320;
+							faceColors1[i] = faceColors1[i] + RED_TO_YELLOW;
 						}
 						break;
 					default:
@@ -263,27 +289,27 @@ public class BAPlusPlugin extends Plugin
 				switch(item)
 				{
 					case BA_GREEN_EGG_ID:
-						if (faceColors2[i] >= 0)
+						if (faceColors2[i] < 500)
 						{
-							log.debug("GREEN EGG: " + faceColors2[i]);
+							faceColors2[i] = faceColors2[i] + WHITE_TO_GREEN;
 						}
 						break;
 					case BA_RED_EGG_ID:
-						if (faceColors2[i] >= 0)
+						if (faceColors2[i] < 750)
 						{
-							log.debug("RED EGG: " + faceColors2[i]);
+							faceColors2[i] = faceColors2[i] + WHITE_TO_RED;
 						}
 						break;
 					case BA_BLUE_EGG_ID:
-						if (faceColors2[i] >= 0)
+						if (faceColors2[i] < 500)
 						{
-							log.debug("BLUE EGG: " + faceColors2[i]);
+							faceColors2[i] = faceColors2[i] + WHITE_TO_BLUE;
 						}
 						break;
 					case BA_YELLOW_EGG_ID:
 						if (faceColors2[i] >= 60466)
 						{
-							faceColors2[i] = faceColors2[i] - 56320;
+							faceColors2[i] = faceColors2[i] + RED_TO_YELLOW;
 						}
 						break;
 					default:
@@ -298,27 +324,27 @@ public class BAPlusPlugin extends Plugin
 				switch(item)
 				{
 					case BA_GREEN_EGG_ID:
-						if (faceColors3[i] >= 0)
+						if (faceColors3[i] < 500)
 						{
-							log.debug("GREEN EGG: " + faceColors3[i]);
+							faceColors3[i] = faceColors3[i] + WHITE_TO_GREEN;
 						}
 						break;
 					case BA_RED_EGG_ID:
-						if (faceColors3[i] >= 0)
+						if (faceColors3[i] < 750)
 						{
-							log.debug("RED EGG: " + faceColors3[i]);
+							faceColors3[i] = faceColors3[i] + WHITE_TO_RED;
 						}
 						break;
 					case BA_BLUE_EGG_ID:
-						if (faceColors3[i] >= 0)
+						if (faceColors3[i] < 500)
 						{
-							log.debug("BLUE EGG: " + faceColors3[i]);
+							faceColors3[i] = faceColors3[i] + WHITE_TO_BLUE;
 						}
 						break;
 					case BA_YELLOW_EGG_ID:
 						if (faceColors3[i] >= 60466)
 						{
-							faceColors3[i] = faceColors3[i] - 56320;
+							faceColors3[i] = faceColors3[i] + RED_TO_YELLOW;
 						}
 						break;
 					default:
