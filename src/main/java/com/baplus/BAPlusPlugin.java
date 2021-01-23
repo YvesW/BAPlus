@@ -73,10 +73,20 @@ public class BAPlusPlugin extends Plugin
 	private final int BA_POISONED_EGG_ID = 10535;
 	private final int BA_SPIKED_EGG_ID = 10536;
 	private final int BA_OMEGA_EGG_ID = 10537;
-	private final int WHITE_TO_RED = 900;
-	private final int WHITE_TO_GREEN = 22400;
-	private final int WHITE_TO_BLUE = 43400;
+
+	private final int WHITE_TO_RED = 896;		// 000000 111 0000000 | Red, Full saturation, No brightness change
+	private final int WHITE_TO_GREEN = 22400;	// 010101 111 0000000 | Green, Full saturation, No brightness change
+	private final int WHITE_TO_BLUE = 43392;	// 101010 011 0000000 | Blue, Half saturation, No brightness change
 	private final int RED_TO_YELLOW = -56320;
+	private final int YELLOW_RED_DIVIDE = 60466;
+	private final int SATURATION_LIMIT = 128;	// 000000 001 0000000 | Under this is pure brightness, no color (grey)
+	private final int RED_BRIGHTNESS_LIMIT = 940;
+	private final int RED_ADJUST = 920;
+	private final int GREEN_BRIGHTNESS_LIMIT = 22450;
+	private final int GREEN_ADJUST = 22418;
+	private final int BLUE_BRIGHTNESS_LIMIT = 43426;
+	private final int BLUE_ADJUST = 43426;
+
 	private static final int BA_WAVE_NUM_INDEX = 2;
 	private static final int BA_WAVE_COUNT = 10;
 	private static final String START_WAVE = "1";
@@ -254,25 +264,37 @@ public class BAPlusPlugin extends Plugin
 				switch(item)
 				{
 					case BA_GREEN_EGG_ID:
-						if (faceColors1[i] < 500)
+						if (faceColors1[i] < SATURATION_LIMIT)
 						{
 							faceColors1[i] = faceColors1[i] + WHITE_TO_GREEN;
 						}
+						else if (faceColors1[i] >= GREEN_BRIGHTNESS_LIMIT)
+						{
+							faceColors1[i] = GREEN_ADJUST;
+						}
 						break;
 					case BA_RED_EGG_ID:
-						if (faceColors1[i] < 750)
+						if (faceColors1[i] < SATURATION_LIMIT)
 						{
 							faceColors1[i] = faceColors1[i] + WHITE_TO_RED;
 						}
+						else if (faceColors1[i] >= RED_BRIGHTNESS_LIMIT)
+						{
+							faceColors1[i] = RED_ADJUST;
+						}
 						break;
 					case BA_BLUE_EGG_ID:
-						if (faceColors1[i] < 500)
+						if (faceColors1[i] < SATURATION_LIMIT)
 						{
 							faceColors1[i] = faceColors1[i] + WHITE_TO_BLUE;
 						}
+						else if (faceColors1[i] >= BLUE_BRIGHTNESS_LIMIT)
+						{
+							faceColors1[i] = BLUE_ADJUST;
+						}
 						break;
 					case BA_YELLOW_EGG_ID:
-						if (faceColors1[i] >= 60466)
+						if (faceColors1[i] >= YELLOW_RED_DIVIDE)
 						{
 							faceColors1[i] = faceColors1[i] + RED_TO_YELLOW;
 						}
@@ -289,25 +311,37 @@ public class BAPlusPlugin extends Plugin
 				switch(item)
 				{
 					case BA_GREEN_EGG_ID:
-						if (faceColors2[i] < 500)
+						if (faceColors2[i] < SATURATION_LIMIT)
 						{
 							faceColors2[i] = faceColors2[i] + WHITE_TO_GREEN;
 						}
+						else if (faceColors2[i] >= GREEN_BRIGHTNESS_LIMIT)
+						{
+							faceColors2[i] = GREEN_ADJUST;
+						}
 						break;
 					case BA_RED_EGG_ID:
-						if (faceColors2[i] < 750)
+						if (faceColors2[i] < SATURATION_LIMIT)
 						{
 							faceColors2[i] = faceColors2[i] + WHITE_TO_RED;
 						}
+						else if (faceColors2[i] >= RED_BRIGHTNESS_LIMIT)
+						{
+							faceColors2[i] = RED_ADJUST;
+						}
 						break;
 					case BA_BLUE_EGG_ID:
-						if (faceColors2[i] < 500)
+						if (faceColors2[i] < SATURATION_LIMIT)
 						{
 							faceColors2[i] = faceColors2[i] + WHITE_TO_BLUE;
 						}
+						else if (faceColors2[i] >= BLUE_BRIGHTNESS_LIMIT)
+						{
+							faceColors2[i] = BLUE_ADJUST;
+						}
 						break;
 					case BA_YELLOW_EGG_ID:
-						if (faceColors2[i] >= 60466)
+						if (faceColors2[i] >= YELLOW_RED_DIVIDE)
 						{
 							faceColors2[i] = faceColors2[i] + RED_TO_YELLOW;
 						}
@@ -324,25 +358,37 @@ public class BAPlusPlugin extends Plugin
 				switch(item)
 				{
 					case BA_GREEN_EGG_ID:
-						if (faceColors3[i] < 500)
+						if (faceColors3[i] < SATURATION_LIMIT)
 						{
 							faceColors3[i] = faceColors3[i] + WHITE_TO_GREEN;
 						}
+						else if (faceColors3[i] >= GREEN_BRIGHTNESS_LIMIT)
+						{
+							faceColors3[i] = GREEN_ADJUST;
+						}
 						break;
 					case BA_RED_EGG_ID:
-						if (faceColors3[i] < 750)
+						if (faceColors3[i] < SATURATION_LIMIT)
 						{
 							faceColors3[i] = faceColors3[i] + WHITE_TO_RED;
 						}
+						else if (faceColors3[i] >= RED_BRIGHTNESS_LIMIT)
+						{
+							faceColors3[i] = RED_ADJUST;
+						}
 						break;
 					case BA_BLUE_EGG_ID:
-						if (faceColors3[i] < 500)
+						if (faceColors3[i] < SATURATION_LIMIT)
 						{
 							faceColors3[i] = faceColors3[i] + WHITE_TO_BLUE;
 						}
+						else if (faceColors3[i] >= BLUE_BRIGHTNESS_LIMIT)
+						{
+							faceColors3[i] = BLUE_ADJUST;
+						}
 						break;
 					case BA_YELLOW_EGG_ID:
-						if (faceColors3[i] >= 60466)
+						if (faceColors3[i] >= YELLOW_RED_DIVIDE)
 						{
 							faceColors3[i] = faceColors3[i] + RED_TO_YELLOW;
 						}
@@ -509,6 +555,7 @@ public class BAPlusPlugin extends Plugin
 				gameTime.setWaveStartTime();
 			}
 		}
+		log.debug(event.getMessage());
 	}
 
 	@Subscribe
