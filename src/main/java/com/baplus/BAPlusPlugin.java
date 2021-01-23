@@ -555,7 +555,6 @@ public class BAPlusPlugin extends Plugin
 				gameTime.setWaveStartTime();
 			}
 		}
-		log.debug(event.getMessage());
 	}
 
 	@Subscribe
