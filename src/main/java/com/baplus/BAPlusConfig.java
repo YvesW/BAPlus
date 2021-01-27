@@ -35,66 +35,18 @@ import net.runelite.client.config.Keybind;
 @ConfigGroup("example")
 public interface BAPlusConfig extends Config
 {
-	@ConfigItem(
-		keyName = "waveTimes",
-		name = "Show wave and game duration",
-		description = "Displays wave and game duration",
+	@ConfigSection(
+		name = "Customization",
+		description = "Customize call flash and egg models",
 		position = 0
 	)
-	default boolean waveTimes()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		keyName = "waveCompare",
-		name = "Compare wave times against goal",
-		description = "Displays goal wave end times",
-		position = 1
-	)
-	default boolean waveCompare()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "waveSplits",
-		name = "Show wave end splits",
-		description = "Makes you better",
-		position = 2
-	)
-	default boolean waveSplits()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "pointBreakdown",
-		name = "Show game point breakdown",
-		description = "Provides a detailed point breakdown for each role after a round",
-		position = 3
-	)
-	default boolean pointBreakdown()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "wavePointBreakdown",
-		name = "Individual wave point breakdown",
-		description = "Provides a point breakdown after every wave",
-		position = 4
-	)
-	default boolean wavePointBreakdown()
-	{
-		return false;
-	}
-
+	String customization = "customization";
 	@ConfigItem(
 		keyName = "disableCallFlash",
 		name = "Disable Call Flashing",
 		description = "Stops the flashing effect on call changes",
-		position = 5
+		position = 0,
+		section = customization
 	)
 	default boolean disableCallFlashing()
 	{
@@ -105,7 +57,8 @@ public interface BAPlusConfig extends Config
 		keyName = "legacyEggModels",
 		name = "Legacy Egg Models",
 		description = "Replaces eggs with their old solid-color counterparts ('Leggacy' mode)",
-		position = 6
+		position = 1,
+		section = customization
 	)
 	default boolean legacyEggModels()
 	{
@@ -113,16 +66,94 @@ public interface BAPlusConfig extends Config
 	}
 
 	@ConfigSection(
+		name = "Post-Wave Information",
+		description = "Choose what post-wave and post-game messages appear in the chat",
+		position = 1
+	)
+	String postInfo = "postInfo";
+	@ConfigItem(
+		keyName = "waveTimes",
+		name = "Show wave and game duration",
+		description = "Displays wave and game duration",
+		position = 0,
+		section = postInfo
+	)
+	default boolean waveTimes()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "waveCompare",
+		name = "Compare wave times against goal",
+		description = "Displays goal wave end times",
+		position = 1,
+		section = postInfo
+	)
+	default boolean waveCompare()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "waveSplits",
+		name = "Show wave end splits",
+		description = "Makes you better",
+		position = 2,
+		section = postInfo
+	)
+	default boolean waveSplits()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "monsterTimer",
+		name = "Individual monster death times",
+		description = "Displays individual monster death times in chat",
+		position = 3,
+		section = postInfo
+	)
+	default boolean monsterTimer()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "pointBreakdown",
+		name = "Show game point breakdown",
+		description = "Provides a detailed point breakdown for each role after a round",
+		position = 4,
+		section = postInfo
+	)
+	default boolean pointBreakdown()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "wavePointBreakdown",
+		name = "Individual wave point breakdown",
+		description = "Provides a point breakdown after every wave",
+		position = 5,
+		section = postInfo
+	)
+	default boolean wavePointBreakdown()
+	{
+		return false;
+	}
+
+	@ConfigSection(
 		name = "Split Comparisons",
 		description = "Choose which splits to compare against",
-		position = 7
+		position = 2
 	)
 	String splitComparison = "splitComparison";
 	@ConfigItem(
 		keyName = "category",
 		name = "Run Category",
 		description = "Run category to compare against",
-		position = 8,
+		position = 1,
 		section = splitComparison
 	)
 	default RunCategory category()
@@ -134,7 +165,7 @@ public interface BAPlusConfig extends Config
 		keyName = "pbSaveKey",
 		name = "Save last run as PB",
 		description = "Choose the PB run category to save to, then hit this hotkey",
-		position = 9,
+		position = 2,
 		section = splitComparison
 	)
 	default Keybind saveLastRunAsPB()
@@ -147,7 +178,7 @@ public interface BAPlusConfig extends Config
 		name = "Save custom time as PB",
 		description = "Choose the PB run category to save to, enter a custom time\n" +
 			"in the Wave Splits box, then hit this hotkey",
-		position = 10,
+		position = 3,
 		section = splitComparison
 	)
 	default Keybind saveCustomAsPB()
@@ -159,7 +190,7 @@ public interface BAPlusConfig extends Config
 		keyName = "waveEndTimes",
 		name = "Wave End Times",
 		description = "Enter your desired wave end times (time for each specific wave)",
-		position = 11,
+		position = 4,
 		section = splitComparison
 	)
 	default String getDesiredWaveTimes()
@@ -179,7 +210,7 @@ public interface BAPlusConfig extends Config
 		keyName = "waveEndSplits",
 		name = "Wave Splits",
 		description = "Enter your desired wave splits (total time from start to wave finish)",
-		position = 12,
+		position = 5,
 		section = splitComparison
 	)
 	default String getDesiredWaveSplits()
