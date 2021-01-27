@@ -35,6 +35,7 @@ import net.runelite.client.config.Keybind;
 @ConfigGroup("example")
 public interface BAPlusConfig extends Config
 {
+	// ------------- Customization -------------
 	@ConfigSection(
 		name = "Customization",
 		description = "Customize call flash and egg models",
@@ -65,6 +66,9 @@ public interface BAPlusConfig extends Config
 		return false;
 	}
 
+
+
+	// ------------- Post-Wave Information -------------
 	@ConfigSection(
 		name = "Post-Wave Information",
 		description = "Choose what post-wave and post-game messages appear in the chat",
@@ -143,6 +147,9 @@ public interface BAPlusConfig extends Config
 		return false;
 	}
 
+
+
+	// ------------- Split Comparisons -------------
 	@ConfigSection(
 		name = "Split Comparisons",
 		description = "Choose which splits to compare against",
