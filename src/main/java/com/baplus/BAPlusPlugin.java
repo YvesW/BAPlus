@@ -2,6 +2,7 @@
  * Copyright (c) 2018, Cameron <https://github.com/noremac201>
  * Copyright (c) 2018, Jacob M <https://github.com/jacoblairm>
  * Copyright (c) 2020, Sean 'Furret' Hill <https://github.com/hisean1>
+ * Huge shoutout to Gamma1991#0001 who carried me through the egg recoloring
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,13 +35,6 @@ import java.awt.Color;
 import javax.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-/*
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.Varbits;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.VarbitChanged;
-import net.runelite.api.events.WidgetLoaded;*/
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
@@ -57,6 +51,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
+import net.runelite.client.util.Text;
 
 @Slf4j
 @PluginDescriptor(
@@ -82,12 +77,19 @@ public class BAPlusPlugin extends Plugin
 	private final int SATURATION_LIMIT = 128;	// 000000 001 0000000 | Under this is pure brightness, no color (grey)
 	private final int RED_BRIGHTNESS_LIMIT = 940;
 	private final int RED_ADJUST = 920;
+	private final int RED_SHADOW_LIMIT = 918;
+	private final int RED_SHADOW_ADJUST = 917;
 	private final int GREEN_BRIGHTNESS_LIMIT = 22450;
 	private final int GREEN_ADJUST = 22418;
+	private final int GREEN_SHADOW_LIMIT = 22415;
+	private final int GREEN_SHADOW_ADJUST = 22408;
 	private final int BLUE_BRIGHTNESS_LIMIT = 43426;
 	private final int BLUE_ADJUST = 43426;
+	private final int BLUE_SHADOW_LIMIT = 43420;
+	private final int BLUE_SHADOW_ADJUST = 43418;
 
 	private static final int BA_WAVE_NUM_INDEX = 2;
+	private static final int BA_MONSTER_DEATH_INDEX = 5;
 	private static final int BA_WAVE_COUNT = 10;
 	private static final String START_WAVE = "1";
 	private static final String ENDGAME_REWARD_NEEDLE_TEXT = "<br>5";
@@ -216,7 +218,8 @@ public class BAPlusPlugin extends Plugin
 		if (config.legacyEggModels())
 		{
 			TileItem item = itemSpawned.getItem();
-			if (item.getId() == BA_GREEN_EGG_ID)
+			int itemID = item.getId();
+			/*if (item.getId() == BA_GREEN_EGG_ID)
 			{
 				recolorAllFaces(item.getModel(), BA_GREEN_EGG_ID);
 			}
@@ -239,165 +242,130 @@ public class BAPlusPlugin extends Plugin
 			else if (item.getId() == BA_SPIKED_EGG_ID)
 			{
 				recolorAllFaces(item.getModel(), BA_YELLOW_EGG_ID);
+			}*/
+			if (itemID >= BA_GREEN_EGG_ID && itemID <= BA_OMEGA_EGG_ID)
+			{
+				recolorEggFaces(item.getModel(), itemID);
 			}
 		}
 	}
 
-	private void recolorAllFaces(Model model, int item)
+	private void recolorEggFaces(Model model, int itemID)
 	{
-		if (model == null) {
-			return;
+		System.out.println("recolorEggFaces: " + itemID);
+		switch(itemID)
+		{
+			case BA_GREEN_EGG_ID:
+				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_GREEN, GREEN_BRIGHTNESS_LIMIT, GREEN_ADJUST, GREEN_SHADOW_LIMIT, GREEN_SHADOW_ADJUST);
+				break;
+			case BA_RED_EGG_ID:
+				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_RED, RED_BRIGHTNESS_LIMIT, RED_ADJUST, RED_SHADOW_LIMIT, RED_SHADOW_ADJUST);
+				break;
+			case BA_BLUE_EGG_ID:
+				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_BLUE, BLUE_BRIGHTNESS_LIMIT, BLUE_ADJUST, BLUE_SHADOW_LIMIT, BLUE_SHADOW_ADJUST);
+				break;
+			case BA_YELLOW_EGG_ID:
+				replaceFaceColorValues(model, 0, RED_TO_YELLOW, YELLOW_RED_DIVIDE, 0, 0, 0);
+				break;
+			default:
+				break;
 		}
+	}
 
+	private void replaceFaceColorValues(Model model, int saturationLimit, int correctionValue, int brightnessLimit, int adjust, int shadowLimit, int shadowAdjust)
+	{
 		int[] faceColors1 = model.getFaceColors1();
 		int[] faceColors2 = model.getFaceColors2();
 		int[] faceColors3 = model.getFaceColors3();
 
-		replaceFaceColorValues(faceColors1, faceColors2, faceColors3, item);
-	}
-
-	private void replaceFaceColorValues(int[] faceColors1, int[] faceColors2, int[] faceColors3, int item) {
-		if (faceColors1.length > 0)
+		if (faceColors3.length != faceColors1.length || faceColors3.length != faceColors2.length || faceColors1.length != faceColors2.length)
 		{
+			System.out.println("Model face array length mismatch");
+			return;
+		}
+
+		try
+		{
+			// All face colors arrays should be the same length
 			for (int i = 0; i < faceColors1.length; i++)
 			{
-				switch(item)
+				// Backside logo of eggs are 0<x<128
+				if (faceColors1[i] < saturationLimit)
 				{
-					case BA_GREEN_EGG_ID:
-						if (faceColors1[i] < SATURATION_LIMIT)
+					faceColors1[i] += correctionValue;
+					// Fix for western bright patches
+					if (faceColors1[i] > shadowLimit)
+					{
+						/*if (i < faceColors1.length / 2)
 						{
-							faceColors1[i] = faceColors1[i] + WHITE_TO_GREEN;
-						}
-						else if (faceColors1[i] >= GREEN_BRIGHTNESS_LIMIT)
+							faceColors1[i] = 0;
+						}*/
+					}
+				}
+				// Front side logo of eggs are over brightness limit, ignore yellow eggs
+				else if (faceColors1[i] > brightnessLimit && saturationLimit != 0)
+				{
+					faceColors1[i] = adjust;
+				}
+
+				// Backside logo of eggs are 0<x<128
+				if (faceColors2[i] < saturationLimit)
+				{
+					faceColors2[i] += correctionValue;
+					// Fix for western bright patches
+					if (faceColors2[i] > shadowLimit)
+					{
+						/*if (i < faceColors2.length / 2)
 						{
-							faceColors1[i] = GREEN_ADJUST;
-						}
-						break;
-					case BA_RED_EGG_ID:
-						if (faceColors1[i] < SATURATION_LIMIT)
+							faceColors2[i] = 0;
+						}*/
+					}
+				}
+				// Front side logo of eggs are over brightness limit, ignore yellow eggs
+				else if (faceColors2[i] > brightnessLimit && saturationLimit != 0)
+				{
+					faceColors2[i] = adjust;
+				}
+
+				// Backside logo of eggs are 0<x<128
+				if (faceColors3[i] < saturationLimit)
+				{
+					faceColors3[i] += correctionValue;
+					// Fix for western bright patches
+					if (faceColors3[i] > shadowLimit)
+					{
+						/*if (i < faceColors3.length / 2)
 						{
-							faceColors1[i] = faceColors1[i] + WHITE_TO_RED;
-						}
-						else if (faceColors1[i] >= RED_BRIGHTNESS_LIMIT)
-						{
-							faceColors1[i] = RED_ADJUST;
-						}
-						break;
-					case BA_BLUE_EGG_ID:
-						if (faceColors1[i] < SATURATION_LIMIT)
-						{
-							faceColors1[i] = faceColors1[i] + WHITE_TO_BLUE;
-						}
-						else if (faceColors1[i] >= BLUE_BRIGHTNESS_LIMIT)
-						{
-							faceColors1[i] = BLUE_ADJUST;
-						}
-						break;
-					case BA_YELLOW_EGG_ID:
-						if (faceColors1[i] >= YELLOW_RED_DIVIDE)
-						{
-							faceColors1[i] = faceColors1[i] + RED_TO_YELLOW;
-						}
-						break;
-					default:
-						break;
+							faceColors3[i] = 0;
+						}*/
+					}
+				}
+				// Front side logo of eggs are over brightness limit, ignore yellow eggs
+				else if (faceColors3[i] > brightnessLimit && saturationLimit != 0)
+				{
+					faceColors3[i] = adjust;
+				}
+
+				if (faceColors1[i] >= YELLOW_RED_DIVIDE)
+				{
+					faceColors1[i] = faceColors1[i] + RED_TO_YELLOW;
+				}
+				if (faceColors2[i] >= YELLOW_RED_DIVIDE)
+				{
+					faceColors2[i] = faceColors2[i] + RED_TO_YELLOW;
+				}
+				if (faceColors3[i] >= YELLOW_RED_DIVIDE)
+				{
+					faceColors3[i] = faceColors3[i] + RED_TO_YELLOW;
 				}
 			}
 		}
-		if (faceColors2.length > 0)
+		catch (Exception ex)
 		{
-			for (int i = 0; i < faceColors2.length; i++)
-			{
-				switch(item)
-				{
-					case BA_GREEN_EGG_ID:
-						if (faceColors2[i] < SATURATION_LIMIT)
-						{
-							faceColors2[i] = faceColors2[i] + WHITE_TO_GREEN;
-						}
-						else if (faceColors2[i] >= GREEN_BRIGHTNESS_LIMIT)
-						{
-							faceColors2[i] = GREEN_ADJUST;
-						}
-						break;
-					case BA_RED_EGG_ID:
-						if (faceColors2[i] < SATURATION_LIMIT)
-						{
-							faceColors2[i] = faceColors2[i] + WHITE_TO_RED;
-						}
-						else if (faceColors2[i] >= RED_BRIGHTNESS_LIMIT)
-						{
-							faceColors2[i] = RED_ADJUST;
-						}
-						break;
-					case BA_BLUE_EGG_ID:
-						if (faceColors2[i] < SATURATION_LIMIT)
-						{
-							faceColors2[i] = faceColors2[i] + WHITE_TO_BLUE;
-						}
-						else if (faceColors2[i] >= BLUE_BRIGHTNESS_LIMIT)
-						{
-							faceColors2[i] = BLUE_ADJUST;
-						}
-						break;
-					case BA_YELLOW_EGG_ID:
-						if (faceColors2[i] >= YELLOW_RED_DIVIDE)
-						{
-							faceColors2[i] = faceColors2[i] + RED_TO_YELLOW;
-						}
-						break;
-					default:
-						break;
-				}
-			}
+			System.out.println("--- BAPlusPlugin.replaceColorFaceValues() ---\n" + ex.getClass().toString() + " exception: " + ex.getMessage());
+			log.debug("--- BAPlusPlugin.replaceColorFaceValues() ---\n" + ex.getClass().toString() + " exception: " + ex.getMessage());
 		}
-		if (faceColors3.length > 0)
-		{
-			for (int i = 0; i < faceColors3.length; i++)
-			{
-				switch(item)
-				{
-					case BA_GREEN_EGG_ID:
-						if (faceColors3[i] < SATURATION_LIMIT)
-						{
-							faceColors3[i] = faceColors3[i] + WHITE_TO_GREEN;
-						}
-						else if (faceColors3[i] >= GREEN_BRIGHTNESS_LIMIT)
-						{
-							faceColors3[i] = GREEN_ADJUST;
-						}
-						break;
-					case BA_RED_EGG_ID:
-						if (faceColors3[i] < SATURATION_LIMIT)
-						{
-							faceColors3[i] = faceColors3[i] + WHITE_TO_RED;
-						}
-						else if (faceColors3[i] >= RED_BRIGHTNESS_LIMIT)
-						{
-							faceColors3[i] = RED_ADJUST;
-						}
-						break;
-					case BA_BLUE_EGG_ID:
-						if (faceColors3[i] < SATURATION_LIMIT)
-						{
-							faceColors3[i] = faceColors3[i] + WHITE_TO_BLUE;
-						}
-						else if (faceColors3[i] >= BLUE_BRIGHTNESS_LIMIT)
-						{
-							faceColors3[i] = BLUE_ADJUST;
-						}
-						break;
-					case BA_YELLOW_EGG_ID:
-						if (faceColors3[i] >= YELLOW_RED_DIVIDE)
-						{
-							faceColors3[i] = faceColors3[i] + RED_TO_YELLOW;
-						}
-						break;
-					default:
-						break;
-				}
-			}
-		}
+		System.out.println("Done recoloring");
 	}
 
 	@Subscribe
@@ -554,6 +522,13 @@ public class BAPlusPlugin extends Plugin
 			{
 				gameTime.setWaveStartTime();
 			}
+		}
+		else if (event.getMessage().startsWith("All of the Penance") && gameTime != null && inGameBit != 0 && config.monsterTimer())
+		{
+			final MessageNode node = event.getMessageNode();
+			final String nodeValue = Text.removeTags(node.getValue());
+			node.setValue(nodeValue + " (<col=ff8000>" + timeToSeconds(gameTime.getTime(true)) + "s<col=ffffff>)");
+			chatMessageManager.update(node);
 		}
 	}
 
