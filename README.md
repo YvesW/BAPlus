@@ -1,6 +1,8 @@
 # BA Plus
 Speedrunning and leeching enhancements to Barbarian Assault
 
+- Disable Call Flashing -> Stops the new call from flashing every time it changes
+- Legacy Egg Models -> Partially recolors the icons on the eggs to make them closer to their old solid colors
 - Show wave and game duration -> Duplicates functionality in the vanilla BA plugin, recommended to disable the vanilla version
 - Compare wave times against goal -> Will add a goal comparison to the wave duration message
 - Show wave end splits -> Compares your total run time (split) against a time of your choosing.
