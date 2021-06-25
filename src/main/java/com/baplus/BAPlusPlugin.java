@@ -81,7 +81,7 @@ public class BAPlusPlugin extends Plugin
 	private final int RED_SHADOW_ADJUST = 917;
 	private final int GREEN_BRIGHTNESS_LIMIT = 22450;
 	private final int GREEN_ADJUST = 22418;
-	private final int GREEN_SHADOW_LIMIT = 22415;
+	private final int GREEN_SHADOW_FACE_MAX_INDEX = 45;
 	private final int GREEN_SHADOW_ADJUST = 22408;
 	private final int BLUE_BRIGHTNESS_LIMIT = 43426;
 	private final int BLUE_ADJUST = 43426;
@@ -91,6 +91,7 @@ public class BAPlusPlugin extends Plugin
 	private static final int BA_WAVE_NUM_INDEX = 2;
 	private static final int BA_MONSTER_DEATH_INDEX = 5;
 	private static final int BA_WAVE_COUNT = 10;
+	private static final int CALL_FLASH_WIDGET_ID = 3;
 	private static final String START_WAVE = "1";
 	private static final String ENDGAME_REWARD_NEEDLE_TEXT = "<br>5";
 	private static final String CONFIG_GROUP = "barbarianAssault";
@@ -169,8 +170,15 @@ public class BAPlusPlugin extends Plugin
 			else if (config.category() == RunCategory.CUSTOM)
 			{
 				waveGoal = parseWaveTimesFromString(config.getDesiredWaveTimes());
-				announceMessage("Saved new goal times: " + waveGoal[0] + ", " + waveGoal[1] + ", " + waveGoal[2] + ", " + waveGoal[3]
-					+ ", " + waveGoal[4] + ", " + waveGoal[5] + ", " + waveGoal[6] + ", " + waveGoal[7] + ", " + waveGoal[8] + ", " + waveGoal[9]);
+				if (waveGoal.length >= 10)
+				{
+					announceMessage("Saved new goal times: " + waveGoal[0] + ", " + waveGoal[1] + ", " + waveGoal[2] + ", " + waveGoal[3]
+						+ ", " + waveGoal[4] + ", " + waveGoal[5] + ", " + waveGoal[6] + ", " + waveGoal[7] + ", " + waveGoal[8] + ", " + waveGoal[9]);
+				}
+				else
+				{
+					announceMessage("Error parsing wave end times, invalid input.");
+				}
 			}
 			else
 			{
@@ -256,23 +264,23 @@ public class BAPlusPlugin extends Plugin
 		switch(itemID)
 		{
 			case BA_GREEN_EGG_ID:
-				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_GREEN, GREEN_BRIGHTNESS_LIMIT, GREEN_ADJUST, GREEN_SHADOW_LIMIT, GREEN_SHADOW_ADJUST);
+				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_GREEN, GREEN_BRIGHTNESS_LIMIT, GREEN_ADJUST);
 				break;
 			case BA_RED_EGG_ID:
-				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_RED, RED_BRIGHTNESS_LIMIT, RED_ADJUST, RED_SHADOW_LIMIT, RED_SHADOW_ADJUST);
+				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_RED, RED_BRIGHTNESS_LIMIT, RED_ADJUST);
 				break;
 			case BA_BLUE_EGG_ID:
-				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_BLUE, BLUE_BRIGHTNESS_LIMIT, BLUE_ADJUST, BLUE_SHADOW_LIMIT, BLUE_SHADOW_ADJUST);
+				replaceFaceColorValues(model, SATURATION_LIMIT, WHITE_TO_BLUE, BLUE_BRIGHTNESS_LIMIT, BLUE_ADJUST);
 				break;
 			case BA_YELLOW_EGG_ID:
-				replaceFaceColorValues(model, 0, RED_TO_YELLOW, YELLOW_RED_DIVIDE, 0, 0, 0);
+				replaceFaceColorValues(model, 0, RED_TO_YELLOW, YELLOW_RED_DIVIDE, 0);
 				break;
 			default:
 				break;
 		}
 	}
 
-	private void replaceFaceColorValues(Model model, int saturationLimit, int correctionValue, int brightnessLimit, int adjust, int shadowLimit, int shadowAdjust)
+	private void replaceFaceColorValues(Model model, int saturationLimit, int correctionValue, int brightnessLimit, int adjust)
 	{
 		int[] faceColors1 = model.getFaceColors1();
 		int[] faceColors2 = model.getFaceColors2();
@@ -294,13 +302,7 @@ public class BAPlusPlugin extends Plugin
 				{
 					faceColors1[i] += correctionValue;
 					// Fix for western bright patches
-					if (faceColors1[i] > shadowLimit)
-					{
-						/*if (i < faceColors1.length / 2)
-						{
-							faceColors1[i] = 0;
-						}*/
-					}
+
 				}
 				// Front side logo of eggs are over brightness limit, ignore yellow eggs
 				else if (faceColors1[i] > brightnessLimit && saturationLimit != 0)
@@ -313,13 +315,7 @@ public class BAPlusPlugin extends Plugin
 				{
 					faceColors2[i] += correctionValue;
 					// Fix for western bright patches
-					if (faceColors2[i] > shadowLimit)
-					{
-						/*if (i < faceColors2.length / 2)
-						{
-							faceColors2[i] = 0;
-						}*/
-					}
+
 				}
 				// Front side logo of eggs are over brightness limit, ignore yellow eggs
 				else if (faceColors2[i] > brightnessLimit && saturationLimit != 0)
@@ -332,13 +328,7 @@ public class BAPlusPlugin extends Plugin
 				{
 					faceColors3[i] += correctionValue;
 					// Fix for western bright patches
-					if (faceColors3[i] > shadowLimit)
-					{
-						/*if (i < faceColors3.length / 2)
-						{
-							faceColors3[i] = 0;
-						}*/
-					}
+
 				}
 				// Front side logo of eggs are over brightness limit, ignore yellow eggs
 				else if (faceColors3[i] > brightnessLimit && saturationLimit != 0)
@@ -617,19 +607,19 @@ public class BAPlusPlugin extends Plugin
 			switch (role)
 			{
 				case ATTACKER:
-					final Widget atkFlashWidget = client.getWidget(485, 4);
+					final Widget atkFlashWidget = client.getWidget(485, CALL_FLASH_WIDGET_ID);
 					atkFlashWidget.setOpacity(255);
 					break;
 				case DEFENDER:
-					final Widget defFlashWidget = client.getWidget(487, 4);
+					final Widget defFlashWidget = client.getWidget(487, CALL_FLASH_WIDGET_ID);
 					defFlashWidget.setOpacity(255);
 					break;
 				case COLLECTOR:
-					final Widget colFlashWidget = client.getWidget(486, 4);
+					final Widget colFlashWidget = client.getWidget(486, CALL_FLASH_WIDGET_ID);
 					colFlashWidget.setOpacity(255);
 					break;
 				case HEALER:
-					final Widget healFlashWidget = client.getWidget(488, 4);
+					final Widget healFlashWidget = client.getWidget(488, CALL_FLASH_WIDGET_ID);
 					healFlashWidget.setOpacity(255);
 					break;
 				default:
